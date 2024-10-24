@@ -1,4 +1,0 @@
-// api 모듈
-dependencies {
-    implementation project(':core')
-}

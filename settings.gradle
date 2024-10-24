@@ -1,4 +1,8 @@
 rootProject.name = 'mindshare'
 include 'api'
 include 'core'
+include 'domain'
+include 'infrastructure'
+include 'post'
+include 'user'
 

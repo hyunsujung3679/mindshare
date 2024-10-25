@@ -1,13 +1,15 @@
 package com.hsj.aft.user.controller;
 
+import com.hsj.aft.common.dto.CommonResponse;
 import com.hsj.aft.user.dto.UserDto;
-import com.hsj.aft.user.dto.request.LoginRequest;
-import com.hsj.aft.user.dto.request.SignUpRequest;
-import com.hsj.aft.user.dto.response.CommonResponse;
+import com.hsj.aft.user.dto.request.LoginReq;
+import com.hsj.aft.user.dto.request.SignUpReq;
+import com.hsj.aft.user.dto.response.SignUpRes;
 import com.hsj.aft.user.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,27 +24,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.hsj.aft.user.common.Constants.*;
+import java.util.Locale;
+
+import static com.hsj.aft.common.constants.Constants.ID_CHECK_CODE;
+import static com.hsj.aft.common.constants.Constants.LOGIN_FAIL_CODE;
+
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
+    private final MessageSource messageSource;
     private final AuthenticationManager authenticationManager;
     private final AuthService authService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest user) {
+    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpReq user) {
         UserDto signUpUser = authService.signUp(user);
         if(signUpUser == null) {
-            return new ResponseEntity<>(CommonResponse.error(ID_CHECK_CODE, ID_CHECK_MESSAGE), HttpStatus.OK);
+            return new ResponseEntity<>(CommonResponse.error(ID_CHECK_CODE,
+                    messageSource.getMessage("message.id.check", null, Locale.KOREA)), HttpStatus.OK);
         }
-        return new ResponseEntity<>(CommonResponse.success(signUpUser), HttpStatus.OK);
+
+        SignUpRes response = new SignUpRes();
+        response.setUser(signUpUser);
+
+        return new ResponseEntity<>(CommonResponse.success(response), HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse> login(@RequestBody LoginRequest user, HttpServletRequest request) {
+    public ResponseEntity<CommonResponse> login(@RequestBody LoginReq user, HttpServletRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -54,11 +66,12 @@ public class AuthController {
             securityContext.setAuthentication(authentication);
 
             HttpSession session = request.getSession(true);
-            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);  // 이 키를 사용해야 Spring Security가 인식
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
 
             return new ResponseEntity<>(CommonResponse.success(), HttpStatus.OK);
         } catch (AuthenticationException e) {
-            return new ResponseEntity<>(CommonResponse.error(LOGIN_FAIL_CODE, LOGIN_FAIL_MESSAGE), HttpStatus.OK);
+            return new ResponseEntity<>(CommonResponse.error(LOGIN_FAIL_CODE,
+                    messageSource.getMessage("message.login.fail", null, Locale.KOREA)), HttpStatus.OK);
         }
     }
 

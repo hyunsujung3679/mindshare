@@ -1,8 +1,9 @@
-package com.hsj.aft.user.dto.response;
+package com.hsj.aft.common.dto;
 
 import lombok.Getter;
-import static com.hsj.aft.user.common.Constants.SUCCESS_CODE;
-import static com.hsj.aft.user.common.Constants.SUCCESS_MESSAGE;
+
+import static com.hsj.aft.common.constants.Constants.SUCCESS_CODE;
+import static com.hsj.aft.common.constants.Constants.SUCCESS_MESSAGE;
 
 @Getter
 public class CommonResponse {
@@ -28,7 +29,7 @@ public class CommonResponse {
     }
 
     public static CommonResponse success(Object data) {
-        return new CommonResponse("200", "OK", data);
+        return new CommonResponse(SUCCESS_CODE, SUCCESS_MESSAGE, data);
     }
 
     public static CommonResponse error(String code, String message) {

@@ -1,4 +1,4 @@
-package com.hsj.aft.user.common.config;
+package com.hsj.aft.user.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

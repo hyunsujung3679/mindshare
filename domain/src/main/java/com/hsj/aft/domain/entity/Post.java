@@ -11,11 +11,11 @@ import org.springframework.data.domain.Persistable;
 @Table
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post extends BaseEntity implements Persistable<String> {
+public class Post extends BaseEntity implements Persistable<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tableNo;
+    private Integer postNo;
 
     @Column(nullable = false)
     private String title;
@@ -25,11 +25,14 @@ public class Post extends BaseEntity implements Persistable<String> {
 
     private int viewCount;
 
+    private String deleteYn;
+
     // 생성자
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
         this.viewCount = 0;
+        this.deleteYn = "N";
     }
 
     public void increaseViewCount() {
@@ -44,9 +47,13 @@ public class Post extends BaseEntity implements Persistable<String> {
         this.content = content;
     }
 
+    public void updateDeleteYn(String deleteYn) {
+        this.deleteYn = deleteYn;
+    }
+
     @Override
-    public String getId() {
-        return tableNo.toString();
+    public Integer getId() {
+        return postNo;
     }
 
     @Override

@@ -67,7 +67,7 @@ public class User extends BaseTimeEntity implements Persistable<Integer> {
     }
 
     //==연관관계 메서드==//
-    public void setModifyUser(User user) {
+    public void updateModifyUser(User user) {
         this.modifyUser = user;
         user.getModifiedUsers().add(this);
     }

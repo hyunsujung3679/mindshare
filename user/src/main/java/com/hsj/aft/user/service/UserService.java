@@ -35,6 +35,7 @@ public class UserService {
 
         if(userReq.getUserName() != null && !user.getUserName().equals(userReq.getUserName())) {
             user.updateUserName(userReq.getUserName());
+            user.updateModifyUser(user);
         }
 
         if(userReq.getCurrentPassword() != null && userReq.getNewPassword() != null) {
@@ -47,6 +48,7 @@ public class UserService {
 
             String encodedNewPassword = passwordEncoder.encode(userReq.getNewPassword());
             user.updatePassword(encodedNewPassword);
+            user.updateModifyUser(user);
         }
 
         return UserDto.from(user);

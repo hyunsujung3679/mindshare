@@ -1,6 +1,7 @@
-package com.hsj.aft.domain.entity;
+package com.hsj.aft.domain.entity.user;
 
-import com.hsj.aft.domain.entity.embedded.BaseTimeEntity;
+import com.hsj.aft.domain.entity.base.BaseTimeEntity;
+import com.hsj.aft.domain.entity.post.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -66,11 +67,6 @@ public class User extends BaseTimeEntity implements Persistable<Integer> {
     }
 
     //==연관관계 메서드==//
-    public void setInsertUser(User user) {
-        this.insertUser = user;
-        user.getInsertedUsers().add(this);
-    }
-
     public void setModifyUser(User user) {
         this.modifyUser = user;
         user.getModifiedUsers().add(this);

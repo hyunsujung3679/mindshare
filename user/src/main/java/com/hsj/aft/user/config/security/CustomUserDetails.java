@@ -1,6 +1,6 @@
 package com.hsj.aft.user.config.security;
 
-import com.hsj.aft.domain.entity.User;
+import com.hsj.aft.domain.entity.user.User;
 import lombok.Getter;
 
 import java.util.Collections;

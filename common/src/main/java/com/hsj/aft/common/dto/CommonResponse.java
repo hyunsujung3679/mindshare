@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 public class CommonResponse {
 
     private final String code;
-    private final String message;
+    private final Object message;
     private final Object data;
 
     public CommonResponse() {
@@ -22,6 +22,12 @@ public class CommonResponse {
         this.data = data;
     }
 
+    public CommonResponse(String code, Object message, Object data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
+
     public static CommonResponse success() {
         return new CommonResponse();
     }
@@ -31,6 +37,10 @@ public class CommonResponse {
     }
 
     public static CommonResponse error(String code, String message) {
+        return new CommonResponse(code, message, null);
+    }
+
+    public static CommonResponse error(String code, Object message) {
         return new CommonResponse(code, message, null);
     }
 }

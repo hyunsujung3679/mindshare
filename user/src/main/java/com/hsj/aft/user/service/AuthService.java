@@ -1,7 +1,7 @@
 package com.hsj.aft.user.service;
 
 import com.hsj.aft.common.exception.DuplicateIdException;
-import com.hsj.aft.domain.entity.User;
+import com.hsj.aft.domain.entity.user.User;
 import com.hsj.aft.user.config.security.*;
 import com.hsj.aft.user.dto.UserDto;
 import com.hsj.aft.user.dto.request.SignUpReq;
@@ -15,9 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

@@ -1,16 +1,14 @@
 package com.hsj.aft.post.repository;
 
-import com.hsj.aft.domain.entity.Post;
-import com.hsj.aft.post.dto.QPostDto;
 import com.hsj.aft.post.dto.PostDto;
+import com.hsj.aft.post.dto.QPostDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
 
-import static com.hsj.aft.domain.entity.QPost.post;
-import static com.hsj.aft.domain.entity.QUser.user;
+import static com.hsj.aft.domain.entity.post.QPost.post;
 
 public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 

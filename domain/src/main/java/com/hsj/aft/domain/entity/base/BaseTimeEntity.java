@@ -1,4 +1,4 @@
-package com.hsj.aft.domain.entity.embedded;
+package com.hsj.aft.domain.entity.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -23,4 +23,5 @@ public class BaseTimeEntity {
 
     @LastModifiedDate
     private LocalDateTime modifyDate;
+
 }

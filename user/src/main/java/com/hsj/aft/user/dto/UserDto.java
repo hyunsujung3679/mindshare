@@ -1,6 +1,6 @@
 package com.hsj.aft.user.dto;
 
-import com.hsj.aft.domain.entity.User;
+import com.hsj.aft.domain.entity.user.User;
 import lombok.Data;
 
 @Data

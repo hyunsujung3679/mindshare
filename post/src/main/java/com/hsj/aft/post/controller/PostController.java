@@ -1,7 +1,6 @@
 package com.hsj.aft.post.controller;
 
 import com.hsj.aft.common.dto.CommonResponse;
-import com.hsj.aft.domain.entity.Post;
 import com.hsj.aft.post.dto.PostDto;
 import com.hsj.aft.post.dto.request.InsertPostReq;
 import com.hsj.aft.post.dto.request.UpdatePostReq;
@@ -33,8 +32,6 @@ public class PostController {
             @RequestBody InsertPostReq post,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         PostDto postDto = postService.insertPost(post, userDetails.getUserNo());
-        postDto.setInsertId(userDetails.getUsername());
-        postDto.setModifyId(userDetails.getUsername());
 
         InsertPostRes response = new InsertPostRes();
         response.setPost(postDto);
@@ -59,7 +56,7 @@ public class PostController {
 
     /**
      * 게시판 검색
-     * @param keyword
+     * @param keyword (포함하면 조회)
      * @param type (title:제목, content:내용, insertId:작성자, modifyId:수정자)
      * @return
      */
@@ -103,7 +100,6 @@ public class PostController {
             @PathVariable Integer postNo,
             @RequestBody UpdatePostReq post,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-
         PostDto updatedPost = postService.updatePost(postNo, post, userDetails.getUserNo());
 
         UpdatePostRes response = new UpdatePostRes();

@@ -1,6 +1,5 @@
 package com.hsj.aft.post.repository;
 
-import com.hsj.aft.domain.entity.Post;
 import com.hsj.aft.post.dto.PostDto;
 
 import java.util.List;

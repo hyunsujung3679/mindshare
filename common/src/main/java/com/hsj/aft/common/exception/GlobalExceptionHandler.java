@@ -4,8 +4,12 @@ import com.hsj.aft.common.dto.CommonResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,5 +32,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PasswordNotMatchException.class)
     public ResponseEntity<CommonResponse> handlePasswordNotMatchException(PasswordNotMatchException e) {
         return ResponseEntity.ok(CommonResponse.error(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<CommonResponse> handleValidationExceptions(MethodArgumentNotValidException e) {
+        List<String> errors = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .toList();
+
+        return ResponseEntity.ok(CommonResponse.error(String.valueOf(HttpStatus.BAD_REQUEST.value()), errors));
     }
 }

@@ -8,6 +8,7 @@ import com.hsj.aft.user.dto.response.SignUpRes;
 import com.hsj.aft.user.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class AuthController {
      * @return
      */
     @PostMapping("/sign-up")
-    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpReq user) {
+    public ResponseEntity<CommonResponse> signUp(@Valid @RequestBody SignUpReq user) {
         UserDto signUpUser = authService.signUp(user);
 
         SignUpRes response = new SignUpRes();

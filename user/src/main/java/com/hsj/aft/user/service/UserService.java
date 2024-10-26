@@ -2,7 +2,7 @@ package com.hsj.aft.user.service;
 
 import com.hsj.aft.common.exception.NoAuthorizationException;
 import com.hsj.aft.common.exception.PasswordNotMatchException;
-import com.hsj.aft.domain.entity.User;
+import com.hsj.aft.domain.entity.user.User;
 import com.hsj.aft.user.dto.UserDto;
 import com.hsj.aft.user.dto.request.UpdateUserReq;
 import com.hsj.aft.user.repository.UserRepository;

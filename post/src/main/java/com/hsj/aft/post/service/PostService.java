@@ -1,8 +1,8 @@
 package com.hsj.aft.post.service;
 
 import com.hsj.aft.common.exception.NoAuthorizationException;
-import com.hsj.aft.domain.entity.Post;
-import com.hsj.aft.domain.entity.User;
+import com.hsj.aft.domain.entity.post.Post;
+import com.hsj.aft.domain.entity.user.User;
 import com.hsj.aft.post.dto.PostDto;
 import com.hsj.aft.post.dto.request.InsertPostReq;
 import com.hsj.aft.post.dto.request.UpdatePostReq;
@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +32,7 @@ public class PostService {
 
         Post savedPost = postRepository.save(new Post(post.getTitle(), post.getContent(), user, user));
 
-        return PostDto.from(savedPost);
+        return getPostDto(savedPost);
     }
 
     public List<PostDto> selectPostList() {
@@ -51,18 +49,7 @@ public class PostService {
 
         post.increaseViewCount();
 
-        User insertUser = userRepository.findById(post.getInsertUser().getUserNo())
-                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", new Object[]{post.getInsertUser().getUserNo()}, Locale.KOREA)));
-
-        User modifyUser = userRepository.findById(post.getModifyUser().getUserNo())
-                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", new Object[]{post.getModifyUser().getUserNo()}, Locale.KOREA)));
-
-        PostDto postDto = PostDto.from(post);
-        postDto.setInsertId(insertUser.getUserId());
-        postDto.setModifyId(modifyUser.getUserId());
-
-        return postDto;
-
+        return getPostDto(post);
     }
 
     public PostDto updatePost(Integer postNo, UpdatePostReq postReq, Integer userNo) {
@@ -85,17 +72,7 @@ public class PostService {
             post.updateDeleteYn(postReq.getDeleteYn());
         }
 
-        User insertUser = userRepository.findById(post.getInsertUser().getUserNo())
-                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", new Object[]{post.getInsertUser().getUserNo()}, Locale.KOREA)));
-
-        User modifyUser = userRepository.findById(post.getModifyUser().getUserNo())
-                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", new Object[]{post.getModifyUser().getUserNo()}, Locale.KOREA)));
-
-        PostDto postDto = PostDto.from(post);
-        postDto.setInsertId(insertUser.getUserId());
-        postDto.setModifyId(modifyUser.getUserId());
-
-        return postDto;
+        return getPostDto(post);
     }
 
     public PostDto deletePost(Integer postNo, Integer userNo) {
@@ -108,6 +85,10 @@ public class PostService {
 
         post.updateDeleteYn("Y");
 
+        return getPostDto(post);
+    }
+
+    private PostDto getPostDto(Post post) {
         User insertUser = userRepository.findById(post.getInsertUser().getUserNo())
                 .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", new Object[]{post.getInsertUser().getUserNo()}, Locale.KOREA)));
 
@@ -117,7 +98,6 @@ public class PostService {
         PostDto postDto = PostDto.from(post);
         postDto.setInsertId(insertUser.getUserId());
         postDto.setModifyId(modifyUser.getUserId());
-
         return postDto;
     }
 }

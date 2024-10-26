@@ -1,6 +1,7 @@
-package com.hsj.aft.domain.entity;
+package com.hsj.aft.domain.entity.post;
 
-import com.hsj.aft.domain.entity.embedded.BaseTimeEntity;
+import com.hsj.aft.domain.entity.user.User;
+import com.hsj.aft.domain.entity.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

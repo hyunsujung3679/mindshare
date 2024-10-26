@@ -1,6 +1,6 @@
 package com.hsj.aft.post.dto;
 
-import com.hsj.aft.domain.entity.Post;
+import com.hsj.aft.domain.entity.post.Post;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 

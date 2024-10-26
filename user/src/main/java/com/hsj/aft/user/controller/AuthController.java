@@ -26,10 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Locale;
 
-import static com.hsj.aft.common.constants.Constants.ID_CHECK_CODE;
-import static com.hsj.aft.common.constants.Constants.LOGIN_FAIL_CODE;
-
-
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -39,22 +35,31 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final AuthService authService;
 
+    /**
+     * 회원가입
+     * @param user
+     * @return
+     */
     @PostMapping("/sign-up")
     public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpReq user) {
         UserDto signUpUser = authService.signUp(user);
-        if(signUpUser == null) {
-            return new ResponseEntity<>(CommonResponse.error(ID_CHECK_CODE,
-                    messageSource.getMessage("message.id.check", null, Locale.KOREA)), HttpStatus.OK);
-        }
 
         SignUpRes response = new SignUpRes();
         response.setUser(signUpUser);
 
-        return new ResponseEntity<>(CommonResponse.success(response), HttpStatus.OK);
+        return ResponseEntity.ok(CommonResponse.success(response));
     }
 
+    /**
+     * 로그인
+     * @param user
+     * @param request
+     * @return
+     */
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse> login(@RequestBody LoginReq user, HttpServletRequest request) {
+    public ResponseEntity<CommonResponse> login(
+            @RequestBody LoginReq user,
+            HttpServletRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -68,13 +73,18 @@ public class AuthController {
             HttpSession session = request.getSession(true);
             session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
 
-            return new ResponseEntity<>(CommonResponse.success(), HttpStatus.OK);
+            return ResponseEntity.ok(CommonResponse.success());
         } catch (AuthenticationException e) {
-            return new ResponseEntity<>(CommonResponse.error(LOGIN_FAIL_CODE,
-                    messageSource.getMessage("message.login.fail", null, Locale.KOREA)), HttpStatus.OK);
+            return ResponseEntity.ok(CommonResponse.error(String.valueOf(HttpStatus.UNAUTHORIZED.value()),
+                    messageSource.getMessage("message.login.fail", null, Locale.KOREA)));
         }
     }
 
+    /**
+     * 로그아웃
+     * @param request
+     * @return
+     */
     @PostMapping("/logout")
     public ResponseEntity<CommonResponse> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -82,7 +92,7 @@ public class AuthController {
             session.invalidate();
         }
         SecurityContextHolder.clearContext();
-        return new ResponseEntity<>(CommonResponse.success(), HttpStatus.OK);
+        return ResponseEntity.ok(CommonResponse.success());
     }
 
 }

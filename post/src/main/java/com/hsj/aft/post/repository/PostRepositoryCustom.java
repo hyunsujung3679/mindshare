@@ -1,11 +1,12 @@
 package com.hsj.aft.post.repository;
 
 import com.hsj.aft.domain.entity.Post;
+import com.hsj.aft.post.dto.PostDto;
 
 import java.util.List;
 
 public interface PostRepositoryCustom {
 
-    List<Post> findListBySearch(String keyword, String type);
+    List<PostDto> findPostList(String keyword, String type);
 
 }

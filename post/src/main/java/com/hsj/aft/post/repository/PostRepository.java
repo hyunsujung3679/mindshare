@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Integer>, PostRepositoryCustom {
 
-    List<Post> findAllByDeleteYnOrderByPostNoDesc(String deleteYn);
-
     Optional<Post> findOneByIdAndDeleteYn(Integer postNo, String deleteYn);
+
 }

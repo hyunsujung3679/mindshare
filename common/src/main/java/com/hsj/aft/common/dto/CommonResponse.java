@@ -1,9 +1,7 @@
 package com.hsj.aft.common.dto;
 
 import lombok.Getter;
-
-import static com.hsj.aft.common.constants.Constants.SUCCESS_CODE;
-import static com.hsj.aft.common.constants.Constants.SUCCESS_MESSAGE;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public class CommonResponse {
@@ -13,8 +11,8 @@ public class CommonResponse {
     private final Object data;
 
     public CommonResponse() {
-        this.code = SUCCESS_CODE;
-        this.message = SUCCESS_MESSAGE;
+        this.code = String.valueOf(HttpStatus.OK.value());
+        this.message = "OK";
         this.data = null;
     }
 
@@ -25,11 +23,11 @@ public class CommonResponse {
     }
 
     public static CommonResponse success() {
-        return new CommonResponse();  // 기본값 사용
+        return new CommonResponse();
     }
 
     public static CommonResponse success(Object data) {
-        return new CommonResponse(SUCCESS_CODE, SUCCESS_MESSAGE, data);
+        return new CommonResponse(String.valueOf(HttpStatus.OK.value()), "OK", data);
     }
 
     public static CommonResponse error(String code, String message) {

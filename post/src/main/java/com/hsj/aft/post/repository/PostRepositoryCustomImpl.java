@@ -1,14 +1,16 @@
 package com.hsj.aft.post.repository;
 
 import com.hsj.aft.domain.entity.Post;
+import com.hsj.aft.post.dto.QPostDto;
+import com.hsj.aft.post.dto.PostDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 import static com.hsj.aft.domain.entity.QPost.post;
+import static com.hsj.aft.domain.entity.QUser.user;
 
 public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
@@ -19,14 +21,26 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public List<Post> findListBySearch(String keyword, String type) {
+    public List<PostDto> findPostList(String keyword, String type) {
         return queryFactory
-                .selectFrom(post)
+                .select(new QPostDto(
+                        post.postNo,
+                        post.title,
+                        post.content,
+                        post.viewCount,
+                        post.deleteYn,
+                        post.insertUser.userId,
+                        post.insertDate,
+                        post.modifyUser.userId,
+                        post.modifyDate
+                ))
+                .from(post)
+                .join(post.insertUser)
+                .join(post.modifyUser)
                 .where(
                         post.deleteYn.eq("N"),
                         searchByType(type, keyword)
                 )
-                .orderBy(post.postNo.desc())
                 .fetch();
     }
 
@@ -35,20 +49,12 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
             return null;
         }
 
-        switch (type) {
-            case "title":
-                return post.title.contains(keyword);
-            case "content":
-                return post.content.contains(keyword);
-            case "insertUserNo":
-                try {
-                    int userNo = Integer.parseInt(keyword);
-                    return post.insertUserNo.eq(userNo);
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-            default:
-                return null;
-        }
+        return switch (type) {
+            case "title" -> post.title.contains(keyword);
+            case "content" -> post.content.contains(keyword);
+            case "insertId" -> post.insertUser.userId.contains(keyword);
+            case "modifyId" -> post.modifyUser.userId.contains(keyword);
+            default -> null;
+        };
     }
 }

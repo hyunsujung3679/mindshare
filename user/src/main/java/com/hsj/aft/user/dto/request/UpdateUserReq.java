@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateUserReq {
 
-    private String userPassword;
+    private String currentPassword;
+    private String newPassword;
     private String userName;
 
 }

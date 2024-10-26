@@ -1,7 +1,7 @@
 package com.hsj.aft.user.service;
 
-import com.hsj.aft.common.exception.DuplicateIdException;
 import com.hsj.aft.common.exception.NoAuthorizationException;
+import com.hsj.aft.common.exception.PasswordNotMatchException;
 import com.hsj.aft.domain.entity.User;
 import com.hsj.aft.user.dto.UserDto;
 import com.hsj.aft.user.dto.request.UpdateUserReq;
@@ -24,12 +24,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public UserDto updateUser(Integer userNo, UpdateUserReq userReq, String userId) {
+    public UserDto updateUser(Integer userNo, UpdateUserReq userReq, Integer sessionUserNo) {
 
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", new Object[]{userNo}, Locale.KOREA)));
 
-        if(!userId.equals(user.getUserId())) {
+        if(!sessionUserNo.equals(user.getUserNo())) {
             throw new NoAuthorizationException(messageSource.getMessage("message.no.authorization", null, Locale.KOREA));
         }
 
@@ -37,9 +37,16 @@ public class UserService {
             user.updateUserName(userReq.getUserName());
         }
 
-        if(userReq.getUserPassword() != null && !passwordEncoder.matches(userReq.getUserPassword(), user.getUserPassword())) {
-            String encodedPassword = passwordEncoder.encode(userReq.getUserPassword());
-            user.updatePassword(encodedPassword);
+        if(userReq.getCurrentPassword() != null && userReq.getNewPassword() != null) {
+            if(!passwordEncoder.matches(userReq.getCurrentPassword(), user.getUserPassword())) {
+                throw new PasswordNotMatchException(messageSource.getMessage("message.current.password.not.match", null, Locale.KOREA));
+            }
+            if(userReq.getCurrentPassword().equals(userReq.getNewPassword())) {
+                throw new PasswordNotMatchException(messageSource.getMessage("message.current.new.password.match", null, Locale.KOREA));
+            }
+
+            String encodedNewPassword = passwordEncoder.encode(userReq.getNewPassword());
+            user.updatePassword(encodedNewPassword);
         }
 
         return UserDto.from(user);

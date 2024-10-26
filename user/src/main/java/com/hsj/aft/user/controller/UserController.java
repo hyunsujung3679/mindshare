@@ -7,11 +7,10 @@ import com.hsj.aft.user.dto.request.UpdateUserReq;
 import com.hsj.aft.user.dto.response.UpdateUserRes;
 import com.hsj.aft.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
+import com.hsj.aft.user.config.security.*;
 
 
 @RestController
@@ -21,12 +20,24 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * 개인정보수정
+     * @param userNo
+     * @param user
+     * @param userDetails
+     * @return
+     */
     @PatchMapping("/{userNo}")
-    public ResponseEntity<CommonResponse> updateUser(@PathVariable Integer userNo, @RequestBody UpdateUserReq user, Principal principal) {
-        UserDto updatedUser = userService.updateUser(userNo, user, principal.getName());
+    public ResponseEntity<CommonResponse> updateUser(
+            @PathVariable Integer userNo,
+            @RequestBody UpdateUserReq user,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        UserDto updatedUser = userService.updateUser(userNo, user, userDetails.getUserNo());
+
         UpdateUserRes response = new UpdateUserRes();
         response.setUser(updatedUser);
-        return new ResponseEntity<>(CommonResponse.success(response), HttpStatus.OK);
+
+        return ResponseEntity.ok(CommonResponse.success(response));
     }
 
 }

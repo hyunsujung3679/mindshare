@@ -3,3 +3,12 @@ dependencies {
     implementation project(':post')
     implementation project(':user')
 }
+
+bootJar {
+    enabled = true
+    mainClass = 'com.hsj.aft.main.MainApplication'
+}
+
+jar {
+    enabled = false
+}

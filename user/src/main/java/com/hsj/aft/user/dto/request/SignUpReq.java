@@ -10,19 +10,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SignUpReq {
 
-    @NotBlank(message = "아이디는 필수 입력값입니다.")
-    @Size(min = 4, max = 12, message = "아이디는 4자 이상 12자 이하로 입력해주세요.")
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "아이디는 영문과 숫자만 사용 가능합니다.")
+    @NotBlank(message = "{message.user.id.not blank}")
+    @Size(min = 4, max = 12, message = "{message.user.id.size}")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "{message.user.id.pattern}")
     private String userId;
 
-    @NotBlank(message = "비밀번호는 필수 입력값입니다.")
-    @Size(min = 8, max = 16, message = "비밀번호는 8자 이상 16자 이하로 입력해주세요.")
+    @NotBlank(message = "{message.user.password.not.blank}")
+    @Size(min = 8, max = 16, message = "{message.user.password.size}")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]*$",
-            message = "비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다.")
+            message = "{message.user.password.pattern}")
     private String userPassword;
 
-    @NotBlank(message = "이름은 필수 입력값입니다.")
-    @Size(min = 2, max = 10, message = "이름은 2자 이상 10자 이하로 입력해주세요.")
+    @NotBlank(message = "{message.user.name.not.blank}")
+    @Size(min = 2, max = 10, message = "{message.user.name.size}")
     private String userName;
 
 }

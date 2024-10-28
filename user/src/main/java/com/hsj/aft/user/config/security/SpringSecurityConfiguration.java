@@ -40,6 +40,7 @@ public class SpringSecurityConfiguration {
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/auth/logout").authenticated()
                     .requestMatchers("/auth/**").permitAll()
                     .anyRequest().authenticated()
             )

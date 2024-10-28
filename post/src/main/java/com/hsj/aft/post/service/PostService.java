@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -44,12 +45,17 @@ public class PostService {
     }
 
     public PostDto selectPost(Integer postNo) {
-        Post post = postRepository.findOneByIdAndDeleteYn(postNo, "N")
-                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.post.not.found", new Object[]{postNo}, Locale.KOREA)));
+        updateViewCount(postNo);
+        return postRepository.findPost(postNo);
+    }
 
-        post.increaseViewCount();
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void updateViewCount(Integer postNo) {
+        long updatedCount = postRepository.increaseViewCount(postNo);
 
-        return getPostDto(post);
+        if (updatedCount == 0) {
+            throw new EntityNotFoundException(messageSource.getMessage("message.post.not.found", new Object[]{postNo}, Locale.KOREA));
+        }
     }
 
     public PostDto updatePost(Integer postNo, UpdatePostReq postReq, Integer userNo) {

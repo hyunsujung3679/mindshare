@@ -8,4 +8,7 @@ public interface PostRepositoryCustom {
 
     List<PostDto> findPostList(String keyword, String type);
 
+    long increaseViewCount(Integer postNo);
+
+    PostDto findPost(Integer postNo);
 }

@@ -42,6 +42,39 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public long increaseViewCount(Integer postNo) {
+        return queryFactory
+                .update(post)
+                .set(post.viewCount, post.viewCount.add(1))
+                .where(post.postNo.eq(postNo))
+                .execute();
+    }
+
+    @Override
+    public PostDto findPost(Integer postNo) {
+        return queryFactory
+                .select(new QPostDto(
+                        post.postNo,
+                        post.title,
+                        post.content,
+                        post.viewCount,
+                        post.deleteYn,
+                        post.insertUser.userId,
+                        post.insertDate,
+                        post.modifyUser.userId,
+                        post.modifyDate
+                ))
+                .from(post)
+                .join(post.insertUser)
+                .join(post.modifyUser)
+                .where(
+                        post.postNo.eq(postNo),
+                        post.deleteYn.eq("N")
+                )
+                .fetchOne();
+    }
+
     private BooleanExpression searchByType(String type, String keyword) {
         if (keyword == null || keyword.isEmpty()) {
             return null;

@@ -124,6 +124,29 @@
     <li>설명: 삭제되지 않은 모든 게시글 조회</li>
     <li>Body 없음</li>
 </ul>
+<H3>게시글 검색 조회</H3>
+<ul>
+    <li>Method: GET</li>
+    <li>URL: http://54.180.102.155:80/post/search</li>
+    <li>인증: 필요 (로그인한 사용자만 가능)</li>
+    <li>설명:</li>
+      <ul>
+        <li>삭제되지 않은 게시글 조회</li>
+        <li>keyword, type을 전달받아서 게시글 조회</li>
+        <li>type에 대한 항목에 keyword가 포함되면 조회</li>
+        <li>type : </li>
+          <ul>
+            <li>title : 제목</li>
+            <li>content : 내용</li>
+            <li>insertId : 작성자</li>
+            <li>modifyId : 수정자</li>
+          </ul>
+      </ul>
+    <li>QueryString 예시 :</li>
+</ul>
+<pre><code>
+    http://54.180.102.155/post/search?keyword=사피엔스&type=title
+</code></pre>
 <H3>게시글 상세 조회</H3>
 <ul>
     <li>Method: GET</li>

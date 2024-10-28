@@ -76,7 +76,7 @@
 </ul>
 <H3>개인정보 수정</H3>
 <ul>
-    <li>Method: POST</li>
+    <li>Method: PATCH</li>
     <li>URL: http://54.180.102.155:80/user/{userNo}</li>
     <li>인증: 필요 (로그인한 사용자만 가능)</li>
     <li>설명:</li>

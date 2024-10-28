@@ -184,3 +184,12 @@
     <li>설명: 본인이 작성한 게시글만 삭제 가능</li>
     <li>Body 없음</li>
 </ul>
+<H1>:thought_balloon: 고민한 점이나 아쉬운 점</H1>
+<ul>
+  <li>Java 17</li>
+  <li>Spring Boot 3.3.4</li>
+  <li>Gradle</li>
+  <li>MySQL 8.0.39</li>
+  <li>AWS EC2, AWS RDS</li>
+  <li>Docker</li>
+</ul>

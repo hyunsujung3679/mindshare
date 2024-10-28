@@ -16,6 +16,9 @@
 <p>├── <strong>post</strong> (게시판)</p>
 <p>├── <strong>user</strong> (사용자)</p>
 
+<H1>:card_index: 논리 데이터 베이스 모델(ERD)</H1>
+<img src="./erd.png" alt="erd">
+
 <H1>:rocket: 프로젝트 실행 방법</H1>
 <ol>
     <li>Proejct Git Clone</li>

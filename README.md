@@ -8,7 +8,7 @@
   <li>Docker</li>
 </ul>
 
-<H1>:wrench: 프로젝트 트리 구조</H1>
+<H1>:wrench: 프로젝트 모듈 구조</H1>
 <p><strong>mindshare</strong> (root Project)</p>
 <p>├── <strong>common</strong> (공통 기능)</p>
 <p>├── <strong>domain</strong> (entity 관리)</p>
@@ -24,7 +24,7 @@
     <li>mindshare/main/src/main/java/com/hsj/aft/main/MainApplication 실행</li>
     <li>Postman을 통해 API 호출</li>
 </ol>
-<p>※ AWS, Docker를 통해 배포를 해서, 배포 환경에서 테스트를 진행하셔도 됩니다.</p>
+<p>※ AWS, Docker를 통해 배포를 했습니다. 배포 환경에서 테스트를 진행하셔도 됩니다.</p>
 
 <H1>:book: API 엔드포인트 목록</H1>
 <H3>회원 가입</H3>

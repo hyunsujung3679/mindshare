@@ -24,8 +24,10 @@ public class Post extends BaseTimeEntity implements Persistable<Integer> {
     @Column(columnDefinition = "LONGTEXT")
     private String content;
 
+    @Column(nullable = false)
     private int viewCount;
 
+    @Column(nullable = false)
     private String deleteYn;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,10 +45,6 @@ public class Post extends BaseTimeEntity implements Persistable<Integer> {
         this.deleteYn = "N";
         this.insertUser = insertUser;
         this.modifyUser = modifyUser;
-    }
-
-    public void increaseViewCount() {
-        this.viewCount++;
     }
 
     public void updateTitle(String title) {

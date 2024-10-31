@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,6 +41,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PasswordNotMatchException.class)
     public ResponseEntity<CommonResponse> handlePasswordNotMatchException(PasswordNotMatchException e) {
         return ResponseEntity.ok(CommonResponse.error(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<CommonResponse> handleAuthenticationException(AuthenticationException e) {
+        return ResponseEntity.ok(CommonResponse.error(String.valueOf(HttpStatus.UNAUTHORIZED.value()),
+                messageSource.getMessage("message.login.fail", null, Locale.KOREA)));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

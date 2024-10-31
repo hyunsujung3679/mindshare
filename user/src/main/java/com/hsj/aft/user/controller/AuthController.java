@@ -53,6 +53,7 @@ public class AuthController {
 
     /**
      * 로그인
+     *
      * @param user
      * @param request
      * @return
@@ -61,7 +62,7 @@ public class AuthController {
     public ResponseEntity<CommonResponse> login(
             @RequestBody LoginReq user,
             HttpServletRequest request) {
-        try {
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             user.getUserId(),
@@ -75,10 +76,6 @@ public class AuthController {
             session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
 
             return ResponseEntity.ok(CommonResponse.success());
-        } catch (AuthenticationException e) {
-            return ResponseEntity.ok(CommonResponse.error(String.valueOf(HttpStatus.UNAUTHORIZED.value()),
-                    messageSource.getMessage("message.login.fail", null, Locale.KOREA)));
-        }
     }
 
     /**

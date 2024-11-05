@@ -1,10 +1,19 @@
 package com.hsj.aft.post.repository;
 
+import com.hsj.aft.domain.entity.post.Post;
 import com.hsj.aft.post.dto.PostDto;
 import com.hsj.aft.post.dto.QPostDto;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -19,8 +28,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public List<PostDto> findPostList(String keyword, String type) {
-        return queryFactory
+    public Page<PostDto> findPostList(String keyword, String type, Pageable pageable) {
+        JPAQuery<PostDto> query = queryFactory
                 .select(new QPostDto(
                         post.postNo,
                         post.title,
@@ -38,15 +47,40 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .where(
                         post.deleteYn.eq("N"),
                         searchByType(type, keyword)
-                )
+                );
+
+        for (Sort.Order order : pageable.getSort()) {
+            PathBuilder<Post> pathBuilder = new PathBuilder<>(Post.class, "post");
+            query.orderBy(
+                    new OrderSpecifier<>(
+                            order.isAscending() ? Order.ASC : Order.DESC,
+                            pathBuilder.getString(order.getProperty())
+                    )
+            );
+        }
+
+        List<PostDto> postList = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        Long total = queryFactory
+                .select(post.count())
+                .from(post)
+                .where(
+                        post.deleteYn.eq("N"),
+                        searchByType(type, keyword)
+                )
+                .fetchOne();
+
+        return new PageImpl<>(postList, pageable, total != null ? total : 0L);
     }
 
     @Override
-    public long increaseViewCount(Integer postNo) {
+    public long increaseViewCount(Integer postNo, int viewCount) {
         return queryFactory
                 .update(post)
-                .set(post.viewCount, post.viewCount.add(1))
+                .set(post.viewCount, post.viewCount.add(viewCount))
                 .where(post.postNo.eq(postNo))
                 .execute();
     }

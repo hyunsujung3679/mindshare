@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Locale;
+
+import static com.hsj.aft.common.constants.Constants.LOGIN_REQUIRED_CODE;
 
 @Configuration
 @EnableWebSecurity
@@ -49,7 +50,7 @@ public class SpringSecurityConfiguration {
                         response.setContentType("application/json;charset=UTF-8");
                         response.setStatus(HttpServletResponse.SC_OK);
 
-                        CommonResponse errorResponse = CommonResponse.error(String.valueOf(HttpStatus.UNAUTHORIZED.value()), messageSource.getMessage("message.login.required", null, Locale.KOREA));
+                        CommonResponse errorResponse = CommonResponse.error(LOGIN_REQUIRED_CODE, messageSource.getMessage("message.login.required", null, Locale.KOREA));
                         String jsonResponse = new ObjectMapper().writeValueAsString(errorResponse);
 
                         response.getWriter().write(jsonResponse);

@@ -1,14 +1,14 @@
 package com.hsj.aft.post.repository;
 
 import com.hsj.aft.post.dto.PostDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface PostRepositoryCustom {
 
-    List<PostDto> findPostList(String keyword, String type);
+    Page<PostDto> findPostList(String keyword, String type, Pageable pageable);
 
-    long increaseViewCount(Integer postNo);
+    long increaseViewCount(Integer postNo, int viewCount);
 
     PostDto findPost(Integer postNo);
 }

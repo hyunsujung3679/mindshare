@@ -8,10 +8,15 @@ import com.hsj.aft.post.dto.response.*;
 import com.hsj.aft.post.service.PostService;
 import com.hsj.aft.user.config.security.*;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -40,35 +45,58 @@ public class PostController {
     }
 
     /**
-     * 게시판 목록 조회
+     *
+     * @param keyword
+     * @param type (title : 제목, content : 내용, insertId : 작성자, modifyId : 수정자 )
+     * @param page
+     * @param size
+     * @param sortBy (postNo : 게시글번호, viewCount : 조회수, insertDate : 등록일자, modifyDATE : 수정일자)
+     * @param direction
      * @return
      */
     @GetMapping
-    public ResponseEntity<CommonResponse> selectPostList() {
-        List<PostDto> postList = postService.selectPostList();
+    public ResponseEntity<CommonResponse> selectPostList(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String type,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "postNo") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction) {
+
+        if (size > 100) {
+            size = 100;
+        }
+
+        if (size <= 0) {
+            size = 1;
+        }
+
+        if (page < 0) {
+            page = 0;
+        }
+
+        List<String> allowedFields = Arrays.asList("postNo", "viewCount", "insertDate", "modifyDate");
+        if (!allowedFields.contains(sortBy)) {
+            sortBy = "postNo";
+        }
+
+        Sort.Direction sortDirection = null;
+        try {
+            sortDirection = Sort.Direction.fromString(direction.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            sortDirection = Sort.Direction.DESC;
+        }
+
+        Sort sort = Sort.by(sortDirection, sortBy);
+
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Page<PostDto> postPage = postService.selectPostList(keyword, type, pageRequest);
 
         SelectPostListRes response = new SelectPostListRes();
-        response.setTotal(postList.size());
-        response.setPostList(postList);
-
-        return ResponseEntity.ok(CommonResponse.success(response));
-    }
-
-    /**
-     * 게시판 검색
-     * @param keyword (포함하면 조회)
-     * @param type (title:제목, content:내용, insertId:작성자, modifyId:수정자)
-     * @return
-     */
-    @GetMapping("/search")
-    public ResponseEntity<CommonResponse> selectPostListBySearch(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String type) {
-        List<PostDto> postList = postService.selectPostList(keyword, type);
-
-        SearchPostListRes response = new SearchPostListRes();
-        response.setTotal(postList.size());
-        response.setPostList(postList);
+        response.setTotal(postPage.getTotalElements());
+        response.setTotalPages(postPage.getTotalPages());
+        response.setCurrentPage(page);
+        response.setPostList(postPage.getContent());
 
         return ResponseEntity.ok(CommonResponse.success(response));
     }

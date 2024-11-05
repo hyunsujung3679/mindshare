@@ -8,6 +8,8 @@ import java.util.List;
 @Data
 public class SelectPostListRes {
 
-    private int total;
+    private long total;
+    private int totalPages;
+    private int currentPage;
     private List<PostDto> postList;
 }

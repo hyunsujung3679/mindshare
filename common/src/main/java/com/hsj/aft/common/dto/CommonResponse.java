@@ -12,7 +12,7 @@ public class CommonResponse {
 
     public CommonResponse() {
         this.code = String.valueOf(HttpStatus.OK.value());
-        this.message = "OK";
+        this.message = HttpStatus.OK.getReasonPhrase();
         this.data = null;
     }
 

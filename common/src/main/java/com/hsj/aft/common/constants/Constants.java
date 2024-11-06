@@ -12,6 +12,8 @@ public class Constants {
     public static final String REFRESH_TOKEN_PREFIX = "RT:";
     public static final String BLACKLIST_PREFIX = "BL:";
 
+    public static final String SUCCESS_CODE = "SUCCESS";
+
     public static final String PASSWORD_NOT_MATCH_CODE = "LOG01";
     public static final String LOGIN_FAIL_CODE = "LOG02";
     public static final String LOGIN_REQUIRED_CODE = "LOG03";
@@ -22,6 +24,7 @@ public class Constants {
     public static final String MESSAGE_NOT_READABLE_CODE = "COM02";
     public static final String ENTITY_NOT_FOUND_CODE = "COM03";
     public static final String METHOD_NOT_ALLOWED_CODE = "COM04";
+    public static final String NOT_FOUND_CODE = "COM05";
 
     public static final String TOKEN_ERROR_CODE = "TOK01";
     public static final String INVALID_TOKEN_CODE = "TOK02";

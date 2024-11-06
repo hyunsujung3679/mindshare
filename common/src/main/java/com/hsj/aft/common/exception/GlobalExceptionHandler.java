@@ -101,7 +101,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonResponse> handleException(Exception e) {
-        return ResponseEntity.ok(CommonResponse.error(String.valueOf(HttpStatus.NOT_FOUND.value()), e.getMessage()));
+        return ResponseEntity.ok(CommonResponse.error(NOT_FOUND_CODE, e.getMessage()));
     }
 
 }

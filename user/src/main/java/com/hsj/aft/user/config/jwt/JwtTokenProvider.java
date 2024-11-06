@@ -95,10 +95,6 @@ public class JwtTokenProvider {
         }
     }
 
-    public long getAccessTokenValidityInSeconds() {
-        return jwtProperties.getAccessTokenValidityInSeconds();
-    }
-
     public long getRefreshTokenValidityInSeconds() {
         return jwtProperties.getRefreshTokenValidityInSeconds();
     }

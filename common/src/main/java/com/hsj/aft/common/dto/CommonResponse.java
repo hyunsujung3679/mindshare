@@ -3,6 +3,8 @@ package com.hsj.aft.common.dto;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import static com.hsj.aft.common.constants.Constants.SUCCESS_CODE;
+
 @Getter
 public class CommonResponse {
 
@@ -11,7 +13,7 @@ public class CommonResponse {
     private final Object data;
 
     public CommonResponse() {
-        this.code = String.valueOf(HttpStatus.OK.value());
+        this.code = SUCCESS_CODE;
         this.message = HttpStatus.OK.getReasonPhrase();
         this.data = null;
     }

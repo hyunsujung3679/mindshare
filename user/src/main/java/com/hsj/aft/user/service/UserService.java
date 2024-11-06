@@ -43,7 +43,7 @@ public class UserService {
                 throw new PasswordNotMatchException(messageSource.getMessage("message.current.password.not.match", null, Locale.KOREA));
             }
             if(userReq.getCurrentPassword().equals(userReq.getNewPassword())) {
-                throw new PasswordNotMatchException(messageSource.getMessage("message.current.password.not.match", null, Locale.KOREA));
+                throw new PasswordNotMatchException(messageSource.getMessage("message.current.new.password.match", null, Locale.KOREA));
             }
 
             String encodedNewPassword = passwordEncoder.encode(userReq.getNewPassword());

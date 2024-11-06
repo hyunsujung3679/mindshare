@@ -20,14 +20,14 @@ import java.util.Locale;
 @Transactional
 public class UserService {
 
-    private final MessageSource messageSource;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final MessageSource messageSource;
 
     public UserDto updateUser(Integer userNo, UpdateUserReq userReq, Integer sessionUserNo) {
 
         User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", new Object[]{userNo}, Locale.KOREA)));
+                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", null, Locale.KOREA)));
 
         if(!sessionUserNo.equals(user.getUserNo())) {
             throw new NoAuthorizationException(messageSource.getMessage("message.no.authorization", null, Locale.KOREA));
@@ -43,7 +43,7 @@ public class UserService {
                 throw new PasswordNotMatchException(messageSource.getMessage("message.current.password.not.match", null, Locale.KOREA));
             }
             if(userReq.getCurrentPassword().equals(userReq.getNewPassword())) {
-                throw new PasswordNotMatchException(messageSource.getMessage("message.current.new.password.match", null, Locale.KOREA));
+                throw new PasswordNotMatchException(messageSource.getMessage("message.current.password.not.match", null, Locale.KOREA));
             }
 
             String encodedNewPassword = passwordEncoder.encode(userReq.getNewPassword());
@@ -53,4 +53,5 @@ public class UserService {
 
         return UserDto.from(user);
     }
+
 }

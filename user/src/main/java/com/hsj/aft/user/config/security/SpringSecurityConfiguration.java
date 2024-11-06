@@ -3,10 +3,10 @@ package com.hsj.aft.user.config.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hsj.aft.common.dto.CommonResponse;
 import com.hsj.aft.user.config.jwt.JwtAuthenticationFilter;
-import com.hsj.aft.user.config.jwt.JwtProperties;
 import com.hsj.aft.user.config.jwt.JwtTokenProvider;
 import com.hsj.aft.user.repository.AuthRepository;
 import com.hsj.aft.user.service.AuthService;
+import com.hsj.aft.user.service.TokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -35,40 +34,8 @@ import static com.hsj.aft.common.constants.Constants.LOGIN_REQUIRED_CODE;
 @RequiredArgsConstructor
 public class SpringSecurityConfiguration {
 
-//    /**
-//     * 세션을 통한 로그인 인증
-//     */
-//
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//            .csrf(AbstractHttpConfigurer::disable)
-//            .sessionManagement(session -> session
-//                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-//            .authorizeHttpRequests(auth -> auth
-//                    .requestMatchers("/auth/logout").authenticated()
-//                    .requestMatchers("/auth/**").permitAll()
-//                    .anyRequest().authenticated()
-//            )
-//            .exceptionHandling(exception -> exception
-//                    .authenticationEntryPoint((request, response, authException) -> {
-//                        response.setContentType("application/json;charset=UTF-8");
-//                        response.setStatus(HttpServletResponse.SC_OK);
-//
-//                        CommonResponse errorResponse = CommonResponse.error(LOGIN_REQUIRED_CODE, messageSource.getMessage("message.login.required", null, Locale.KOREA));
-//                        String jsonResponse = new ObjectMapper().writeValueAsString(errorResponse);
-//
-//                        response.getWriter().write(jsonResponse);
-//                    })
-//            );
-//
-//        return http.build();
-//    }
-//
-
-    private final MessageSource messageSource;
-    private final JwtProperties jwtProperties;
     private final AuthRepository authRepository;
+    private final MessageSource messageSource;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -77,21 +44,16 @@ public class SpringSecurityConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new AuthService(messageSource, passwordEncoder(), authRepository);
+        return new AuthService(passwordEncoder(), authRepository, messageSource);
     }
 
     @Bean
-    public JwtTokenProvider jwtTokenProvider() {
-        return new JwtTokenProvider(jwtProperties, userDetailsService());
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, TokenService tokenService, MessageSource messageSource) {
+        return new JwtAuthenticationFilter(jwtTokenProvider, tokenService, messageSource);
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtTokenProvider());
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
@@ -101,12 +63,12 @@ public class SpringSecurityConfiguration {
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter(),
+                .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setContentType("application/json;charset=UTF-8");
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setStatus(HttpServletResponse.SC_OK);
 
                             CommonResponse errorResponse = CommonResponse.error(
                                     LOGIN_REQUIRED_CODE,
@@ -122,14 +84,11 @@ public class SpringSecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
-        return new ProviderManager(
-                new DaoAuthenticationProvider() {{
-                    setUserDetailsService(userDetailsService);
-                    setPasswordEncoder(passwordEncoder);
-                }}
-        );
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(provider);
     }
+
 }

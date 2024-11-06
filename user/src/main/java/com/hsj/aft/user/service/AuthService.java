@@ -22,9 +22,9 @@ import java.util.Locale;
 @Transactional
 public class AuthService implements UserDetailsService {
 
-    private final MessageSource messageSource;
     private final PasswordEncoder passwordEncoder;
     private final AuthRepository authRepository;
+    private final MessageSource messageSource;
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
@@ -36,7 +36,7 @@ public class AuthService implements UserDetailsService {
 
     public UserDto signUp(SignUpReq signUpReq) {
         if(isDuplicateUserId(signUpReq.getUserId())) {
-            throw new DuplicateIdException(messageSource.getMessage("message.id.check", null, Locale.KOREA));
+            throw new DuplicateIdException( messageSource.getMessage("message.id.check", null, Locale.KOREA));
         }
 
         // 회원 가입 시, insertUserNo, modifyUserNo는 admin 계정의 번호로 저장

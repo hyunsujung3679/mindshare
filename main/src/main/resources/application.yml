@@ -7,7 +7,7 @@ server:
 
 spring:
   application:
-    name: api
+    name: main
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${MYSQL_URL}
@@ -25,3 +25,8 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
+
+jwt:
+  secret-key: ${SECRET_KEY}
+  access-token-validity-in-seconds: 3600  # 1시간
+  refresh-token-validity-in-seconds: 2592000  # 30일

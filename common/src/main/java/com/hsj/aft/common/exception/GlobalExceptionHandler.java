@@ -72,6 +72,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.ok(CommonResponse.error(INVALID_TOKEN_CODE, e.getMessage()));
     }
 
+    @ExceptionHandler(TokenBlackListException.class)
+    public ResponseEntity<CommonResponse> handleTokenBlackListException(TokenBlackListException e) {
+        return ResponseEntity.ok(CommonResponse.error(TOKEN_BLACK_LIST_CODE, e.getMessage()));
+    }
+
     @ExceptionHandler(TokenExpiredException.class)
     public ResponseEntity<CommonResponse> handleTokenExpiredException(TokenExpiredException e) {
         return ResponseEntity.ok(CommonResponse.error(TOKEN_EXPIRED_CODE, e.getMessage()));
@@ -84,18 +89,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<CommonResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        return ResponseEntity.ok(CommonResponse.error(
-                METHOD_NOT_ALLOWED_CODE,
-                messageSource.getMessage("message.method.not.allowed", null, Locale.KOREA)
-        ));
+        return ResponseEntity.ok(CommonResponse.error(METHOD_NOT_ALLOWED_CODE,
+                messageSource.getMessage("message.method.not.allowed", null, Locale.KOREA)));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<CommonResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        return ResponseEntity.ok(CommonResponse.error(
-                MESSAGE_NOT_READABLE_CODE,
-                messageSource.getMessage("message.bad.request", null, Locale.KOREA)
-        ));
+        return ResponseEntity.ok(CommonResponse.error(MESSAGE_NOT_READABLE_CODE,
+                messageSource.getMessage("message.bad.request", null, Locale.KOREA)));
     }
 
     @ExceptionHandler(Exception.class)

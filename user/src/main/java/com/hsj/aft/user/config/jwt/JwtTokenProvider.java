@@ -44,7 +44,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken(Authentication authentication) {
+    public String createRefreshToken() {
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtProperties.getRefreshTokenValidityInSeconds() * 1000);
 
@@ -76,5 +76,30 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public Long getRemainingTime(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            Date expiration = claims.getExpiration();
+            Date now = new Date();
+
+            return Math.max(0, expiration.getTime() - now.getTime());
+        } catch (JwtException | IllegalArgumentException e) {
+            return 0L;
+        }
+    }
+
+    public long getAccessTokenValidityInSeconds() {
+        return jwtProperties.getAccessTokenValidityInSeconds();
+    }
+
+    public long getRefreshTokenValidityInSeconds() {
+        return jwtProperties.getRefreshTokenValidityInSeconds();
     }
 }

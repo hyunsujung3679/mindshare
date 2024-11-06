@@ -20,6 +20,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class RedisCacheService {
+
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
     private final PostRepository postRepository;
@@ -126,7 +127,6 @@ public class RedisCacheService {
                     String viewCount = redisTemplate.opsForValue().get(key);
 
                     if (viewCount != null && !viewCount.isEmpty()) {
-                        // ViewCountSynchronizer 서비스를 통해 DB 업데이트
                         long success = postRepository.increaseViewCount(postNo, Integer.parseInt(viewCount));
                         if (success > 0) {
                             redisTemplate.delete(key);

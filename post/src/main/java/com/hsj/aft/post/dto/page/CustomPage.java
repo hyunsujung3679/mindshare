@@ -22,7 +22,6 @@ public class CustomPage<T> {
     private int number;
     private int size;
 
-    // Page를 CustomPage로 변환하는 정적 메서드
     public static <T> CustomPage<T> from(Page<T> page) {
         return new CustomPage<>(
                 page.getContent(),
@@ -33,7 +32,6 @@ public class CustomPage<T> {
         );
     }
 
-    // CustomPage를 Page로 변환하는 메서드
     public Page<T> toPage() {
         return new PageImpl<>(content, PageRequest.of(number, size), totalElements);
     }

@@ -36,12 +36,8 @@ public class PostService {
     private final MessageSource messageSource;
 
     public PostDto insertPost(InsertPostReq post, Integer userNo) {
-        User user = userRepository.findById(userNo)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        messageSource.getMessage("message.user.not.found",
-                                new Object[]{userNo},
-                                Locale.KOREA))
-                );
+        User user = userRepository.findById(userNo).orElseThrow(() ->
+                new EntityNotFoundException(messageSource.getMessage("message.user.not.found", null, Locale.KOREA)));
 
         Post savedPost = postRepository.save(new Post(post.getTitle(), post.getContent(), user, user));
         PostDto postDto = getPostDto(savedPost);
@@ -77,16 +73,11 @@ public class PostService {
         if (post == null) {
             post = postRepository.findPost(postNo);
             if (post == null) {
-                throw new EntityNotFoundException(
-                        messageSource.getMessage("message.post.not.found",
-                                new Object[]{postNo},
-                                Locale.KOREA)
-                );
+                throw new EntityNotFoundException(messageSource.getMessage("message.post.not.found", null, Locale.KOREA));
             }
             cacheService.setCache(cacheKey, post, POST_CACHE_TTL);
         }
 
-        // 조회수 반영
         Integer viewCount = cacheService.getViewCount(postNo);
         if (viewCount > 0) {
             post.setViewCount(post.getViewCount() + viewCount);
@@ -97,18 +88,10 @@ public class PostService {
 
     public PostDto updatePost(Integer postNo, UpdatePostReq postReq, Integer userNo) {
         Post post = postRepository.findOneByIdAndDeleteYn(postNo, "N")
-                .orElseThrow(() -> new EntityNotFoundException(
-                        messageSource.getMessage("message.post.not.found",
-                                new Object[]{postNo},
-                                Locale.KOREA))
-                );
+                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.post.not.found", null, Locale.KOREA)));
 
         if(userNo != post.getInsertUser().getUserNo()) {
-            throw new NoAuthorizationException(
-                    messageSource.getMessage("message.no.authorization",
-                            null,
-                            Locale.KOREA)
-            );
+            throw new NoAuthorizationException(messageSource.getMessage("message.no.authorization", null, Locale.KOREA));
         }
 
         updatePostFields(post, postReq);
@@ -120,18 +103,10 @@ public class PostService {
 
     public PostDto deletePost(Integer postNo, Integer userNo) {
         Post post = postRepository.findOneByIdAndDeleteYn(postNo, "N")
-                .orElseThrow(() -> new EntityNotFoundException(
-                        messageSource.getMessage("message.post.not.found",
-                                new Object[]{postNo},
-                                Locale.KOREA))
-                );
+                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.post.not.found", null, Locale.KOREA)));
 
         if(userNo != post.getInsertUser().getUserNo()) {
-            throw new NoAuthorizationException(
-                    messageSource.getMessage("message.no.authorization",
-                            null,
-                            Locale.KOREA)
-            );
+            throw new NoAuthorizationException(messageSource.getMessage("message.no.authorization", null, Locale.KOREA));
         }
 
         post.updateDeleteYn("Y");
@@ -157,18 +132,10 @@ public class PostService {
 
     private PostDto getPostDto(Post post) {
         User insertUser = userRepository.findById(post.getInsertUser().getUserNo())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        messageSource.getMessage("message.user.not.found",
-                                new Object[]{post.getInsertUser().getUserNo()},
-                                Locale.KOREA))
-                );
+                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", null, Locale.KOREA)));
 
         User modifyUser = userRepository.findById(post.getModifyUser().getUserNo())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        messageSource.getMessage("message.user.not.found",
-                                new Object[]{post.getModifyUser().getUserNo()},
-                                Locale.KOREA))
-                );
+                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("message.user.not.found", null, Locale.KOREA)));
 
         PostDto postDto = PostDto.from(post);
         postDto.setInsertId(insertUser.getUserId());

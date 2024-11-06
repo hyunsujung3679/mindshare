@@ -1,11 +1,10 @@
 <H1>:wrench: 개발 환경</H1>
 <ul>
   <li>Java 17</li>
-  <li>Spring Boot 3.3.4</li>
+  <li>Spring Boot 3.3.4, Spring Security</li>
+  <li>Redis</li>
   <li>Gradle</li>
-  <li>MySQL 8.0.39</li>
-  <li>AWS EC2, AWS RDS</li>
-  <li>Docker</li>
+  <li>MySQL 8.0.35</li>
 </ul>
 
 <H1>:wrench: 프로젝트 모듈 구조</H1>
@@ -22,18 +21,17 @@
 <H1>:rocket: 프로젝트 실행 방법</H1>
 <ol>
     <li>Proejct Git Clone</li>
-    <li>application.yml에서 Database url, username, password 설정</li>
+    <li>application.yml에서 Database url, username, password, screct-Key 설정</li>
     <li>mindshare/MySQL_Script Download 후, MySQL Workbench에서 스크립트를 읽어서 Table/data 생성</li>
     <li>mindshare/main/src/main/java/com/hsj/aft/main/MainApplication 실행</li>
     <li>Postman을 통해 API 호출</li>
 </ol>
-<p>※ AWS, Docker를 통해 배포를 했습니다. 배포 환경에서 테스트를 진행하셔도 됩니다.</p>
 
 <H1>:book: API 엔드포인트 목록</H1>
 <H3>회원 가입</H3>
 <ul>
     <li>Method: POST</li>
-    <li>URL: http://54.180.102.155:80/auth/sign-up</li>
+    <li>URL: /auth/sign-up</li>
     <li>인증: 불필요</li>
     <li>설명:</li>
       <ul>
@@ -56,12 +54,13 @@
 <H3>로그인</H3>
 <ul>
     <li>Method: POST</li>
-    <li>URL: http://54.180.102.155:80/login</li>
+    <li>URL: /login</li>
     <li>인증: 불필요</li>
     <li>설명:</li>
       <ul>
         <li>아이디, 비밀번호를 전달받아서 로그인 진행</li>
-        <li>세션 유효시간은 기본 설정인 30분</li>
+        <li>access Token 유효시간 : 1시간</li>
+        <li>refresh Token 유효시간 : 30일</li>
       </ul>
     <li>Body 예시:</li>
 </ul>
@@ -72,16 +71,24 @@
 <H3>로그아웃</H3>
 <ul>
     <li>Method: POST</li>
-    <li>URL: http://54.180.102.155:80/logout</li>
-    <li>인증: 필요 (로그인한 사용자만 가능)</li>
-    <li>설명: 로그아웃을 통한 세션만료</li>
+    <li>URL: /logout</li>
+    <li>인증:</li>
+      <ul>
+        <li>필요 (로그인한 사용자만 가능)</li>
+        <li>Header에 Key : Authorization / Value : Bearer + your AccessToken 입력 필요</li>
+      </ul>
+    <li>설명: 로그아웃을 통한 토큰만료</li>
     <li>Body 없음</li>
 </ul>
 <H3>개인정보 수정</H3>
 <ul>
     <li>Method: PATCH</li>
-    <li>URL: http://54.180.102.155:80/user/{userNo}</li>
-    <li>인증: 필요 (로그인한 사용자만 가능)</li>
+    <li>URL: /user/{userNo}</li>
+    <li>인증:</li>
+      <ul>
+        <li>필요 (로그인한 사용자만 가능)</li>
+        <li>Header에 Key : Authorization / Value : Bearer + your AccessToken 입력 필요</li>
+      </ul>
     <li>설명:</li>
       <ul>
         <li>현재 비밀번호, 새 비밀번호 이름을 전달받아서 개인정보 수정</li>
@@ -110,8 +117,12 @@
 <H3>게시글 작성</H3>
 <ul>
     <li>Method: POST</li>
-    <li>URL: http://54.180.102.155:80/post</li>
-    <li>인증: 필요 (로그인한 사용자만 가능)</li>
+    <li>URL: /post</li>
+    <li>인증:</li>
+      <ul>
+        <li>필요 (로그인한 사용자만 가능)</li>
+        <li>Header에 Key : Authorization / Value : Bearer + your AccessToken 입력 필요</li>
+      </ul>
     <li>설명: 제목, 내용 전달받아서 게시글 작성</li>
     <li>Body 예시:</li>
 </ul>
@@ -122,19 +133,15 @@
 <H3>게시글 목록 조회</H3>
 <ul>
     <li>Method: GET</li>
-    <li>URL: http://54.180.102.155:80/post</li>
-    <li>인증: 필요 (로그인한 사용자만 가능)</li>
-    <li>설명: 삭제되지 않은 모든 게시글 조회</li>
-    <li>Body 없음</li>
-</ul>
-<H3>게시글 검색 조회</H3>
-<ul>
-    <li>Method: GET</li>
-    <li>URL: http://54.180.102.155:80/post/search</li>
-    <li>인증: 필요 (로그인한 사용자만 가능)</li>
+    <li>URL: /post</li>
+    <li>인증:</li>
+      <ul>
+        <li>필요 (로그인한 사용자만 가능)</li>
+        <li>Header에 Key : Authorization / Value : Bearer + your AccessToken 입력 필요</li>
+      </ul>
     <li>설명:</li>
       <ul>
-        <li>삭제되지 않은 게시글 조회</li>
+        <li>삭제되지 않은 게시글 목록 조회</li>
         <li>keyword, type을 전달받아서 게시글 조회</li>
         <li>type에 대한 항목에 keyword가 포함되면 조회</li>
         <li>type : </li>
@@ -146,15 +153,19 @@
           </ul>
       </ul>
     <li>QueryString 예시 :</li>
-</ul>
 <pre><code>
     http://54.180.102.155/post/search?keyword=사피엔스&type=title
 </code></pre>
+</ul>
 <H3>게시글 상세 조회</H3>
 <ul>
     <li>Method: GET</li>
-    <li>URL: http://54.180.102.155:80/post/{postNo}</li>
-    <li>인증: 필요 (로그인한 사용자만 가능)</li>
+    <li>URL: /post/{postNo}</li>
+    <li>인증:</li>
+      <ul>
+        <li>필요 (로그인한 사용자만 가능)</li>
+        <li>Header에 Key : Authorization / Value : Bearer + your AccessToken 입력 필요</li>
+      </ul>
     <li>설명:</li>
       <ul>
         <li>삭제되지 않은 해당 게시글 상세 조회</li>
@@ -165,8 +176,12 @@
 <H3>게시글 수정</H3>
 <ul>
     <li>Method: PATCH</li>
-    <li>URL: http://54.180.102.155:80/post/{postNo}</li>
-    <li>인증: 필요 (로그인한 사용자만 가능)</li>
+    <li>URL: /post/{postNo}</li>
+    <li>인증:</li>
+      <ul>
+        <li>필요 (로그인한 사용자만 가능)</li>
+        <li>Header에 Key : Authorization / Value : Bearer + your AccessToken 입력 필요</li>
+      </ul>
     <li>설명:</li>
       <ul>
         <li>제목, 내용 전달받아서 게시글 수정</li>
@@ -182,8 +197,12 @@
 <H3>게시글 삭제</H3>
 <ul>
     <li>Method: DELETE</li>
-    <li>URL: http://54.180.102.155:80/post/{postNo}</li>
-    <li>인증: 필요 (로그인한 사용자만 가능)</li>
+    <li>URL: /post/{postNo}</li>
+    <li>인증:</li>
+      <ul>
+        <li>필요 (로그인한 사용자만 가능)</li>
+        <li>Header에 Key : Authorization / Value : Bearer + your AccessToken 입력 필요</li>
+      </ul>
     <li>설명: 본인이 작성한 게시글만 삭제 가능</li>
     <li>Body 없음</li>
 </ul>
@@ -202,15 +221,6 @@
     <li>보통의 웹사이트에선 개인정보 수정과 비밀번호 변경은 별도로 처리하고 있기 때문입니다.</li>
     <li>요구사항엔 비밀번호 변경 API가 존재하지 않은데, 왠지 비밀번호 변경도 넣어야될 것 같아서 개인정보 수정에 비밀번호 변경도 할 수 있도록 개발하였습니다.</li>
     <li>대신에 개인정보 수정시, 비밀번호 변경이 필수가 아니도록 설정하였습니다.</li>
-  </ol>
-  <br/>
-  <li>세션 vs 토큰에 대한 고민</li>
-  <ol>
-    <li>결론적으로는 세션을 선택하였습니다.</li>
-    <li>구현이 상대적으로 간단하고 서버에서 세션 제어가 용이하기 때문입니다.</li>
-    <li>또한, 단일 도메인과 웹 전용 서비스일 경우 세션이 적합하다고 하여 세션을 선택하였습니다.</li>
-    <li>하지만 서비스의 확장성을 고려한다면, 토큰이 적합하다는 것을 뒤늦게 깨달았습니다.</li>
-    <li>이후에 개발 시간이 추가로 주어진다면, 토큰으로 변경을 고려할 것입니다.</li>
   </ol>
   <br/>
   <li>ERD에 대한 고민</li>

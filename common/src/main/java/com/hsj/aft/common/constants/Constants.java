@@ -9,6 +9,8 @@ public class Constants {
     public static final String LIST_CACHE_KEY = "post:list:%s:%s:%d:%d:%s:%s";
     public static final Duration POST_CACHE_TTL = Duration.ofMinutes(10);
     public static final Duration LIST_CACHE_TTL = Duration.ofMinutes(10);
+    public static final String REFRESH_TOKEN_PREFIX = "RT:";
+    public static final String BLACKLIST_PREFIX = "BL:";
 
     public static final String PASSWORD_NOT_MATCH_CODE = "400";
     public static final String LOGIN_FAIL_CODE = "401";
@@ -19,6 +21,10 @@ public class Constants {
     public static final String MESSAGE_NOT_READABLE_CODE = "406";
     public static final String METHOD_ARGUMENT_NOT_VALID_CODE = "407";
     public static final String DUPLICATE_ID_CODE = "409";
+    public static final String TOKEN_ERROR_CODE = "410";
+    public static final String INVALID_TOKEN_CODE = "411";
+    public static final String TOKEN_EXPIRED_CODE = "412";
+    public static final String INVALID_REFRESH_TOKEN_CODE = "413";
 
 
 }

@@ -45,11 +45,9 @@ public class AuthService implements UserDetailsService {
         String encodedPassword = passwordEncoder.encode(signUpReq.getUserPassword());
         User savedUser = authRepository.save(new User(signUpReq.getUserId(), encodedPassword, signUpReq.getUserName(), user, user));
         return UserDto.from(savedUser);
-
     }
 
     private boolean isDuplicateUserId(String userId) {
         return authRepository.countByUserId(userId) > 0;
     }
-
 }

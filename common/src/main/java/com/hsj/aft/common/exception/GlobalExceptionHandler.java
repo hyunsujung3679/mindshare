@@ -62,23 +62,45 @@ public class GlobalExceptionHandler {
         return ResponseEntity.ok(CommonResponse.error(METHOD_ARGUMENT_NOT_VALID_CODE, errors));
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<CommonResponse> handleException(Exception e, Locale locale) {
-        if (e instanceof HttpRequestMethodNotSupportedException) {
-            return ResponseEntity.ok(CommonResponse.error(
-                    METHOD_NOT_ALLOWED_CODE,
-                    messageSource.getMessage("message.method.not.allowed", null, locale)
-            ));
-        } else if (e instanceof HttpMessageNotReadableException) {
-            return ResponseEntity.ok(CommonResponse.error(
-                    MESSAGE_NOT_READABLE_CODE,
-                    messageSource.getMessage("message.bad.request", null, locale)
-            ));
-        } else {
-            return ResponseEntity.ok(CommonResponse.error(
-                    String.valueOf(HttpStatus.NOT_FOUND.value()),
-                    e.getMessage()
-            ));
-        }
+    @ExceptionHandler(TokenException.class)
+    public ResponseEntity<CommonResponse> handleTokenException(TokenException e) {
+        return ResponseEntity.ok(CommonResponse.error(TOKEN_ERROR_CODE, e.getMessage()));
     }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<CommonResponse> handleInvalidTokenException(InvalidTokenException e) {
+        return ResponseEntity.ok(CommonResponse.error(INVALID_TOKEN_CODE, e.getMessage()));
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<CommonResponse> handleTokenExpiredException(TokenExpiredException e) {
+        return ResponseEntity.ok(CommonResponse.error(TOKEN_EXPIRED_CODE, e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ResponseEntity<CommonResponse> handleInvalidRefreshTokenException(InvalidRefreshTokenException e) {
+        return ResponseEntity.ok(CommonResponse.error(INVALID_REFRESH_TOKEN_CODE, e.getMessage()));
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<CommonResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        return ResponseEntity.ok(CommonResponse.error(
+                METHOD_NOT_ALLOWED_CODE,
+                messageSource.getMessage("message.method.not.allowed", null, Locale.KOREA)
+        ));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<CommonResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        return ResponseEntity.ok(CommonResponse.error(
+                MESSAGE_NOT_READABLE_CODE,
+                messageSource.getMessage("message.bad.request", null, Locale.KOREA)
+        ));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<CommonResponse> handleException(Exception e) {
+        return ResponseEntity.ok(CommonResponse.error(String.valueOf(HttpStatus.NOT_FOUND.value()), e.getMessage()));
+    }
+
 }

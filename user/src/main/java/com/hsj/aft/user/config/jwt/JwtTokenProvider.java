@@ -44,11 +44,13 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken() {
+    public String createRefreshToken(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtProperties.getRefreshTokenValidityInSeconds() * 1000);
 
         return Jwts.builder()
+                .subject(userDetails.getUsername())
                 .issuedAt(now)
                 .expiration(validity)
                 .signWith(key)

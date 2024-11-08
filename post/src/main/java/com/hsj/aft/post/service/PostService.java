@@ -42,7 +42,6 @@ public class PostService {
         Post savedPost = postRepository.save(new Post(post.getTitle(), post.getContent(), user, user));
         PostDto postDto = getPostDto(savedPost);
 
-        // 목록 캐시 삭제
         cacheService.deleteAllPostListCaches();
 
         return postDto;
@@ -96,6 +95,7 @@ public class PostService {
 
         updatePostFields(post, postReq);
 
+        cacheService.deleteAllPostListCaches();
         cacheService.deletePostCaches(postNo);
 
         return getPostDto(post);
@@ -111,6 +111,7 @@ public class PostService {
 
         post.updateDeleteYn("Y");
 
+        cacheService.deleteAllPostListCaches();
         cacheService.deletePostCaches(postNo);
 
         return getPostDto(post);

@@ -6,7 +6,7 @@ public class Constants {
 
     public static final String VIEW_COUNT_KEY = "post:view:%d";
     public static final String POST_CACHE_KEY = "post:data:%d";
-    public static final String LIST_CACHE_KEY = "post:list:%s:%s:%d:%d:%s:%s";
+    public static final String LIST_CACHE_KEY = "post:list:%s:%s:%d:%d:%s";
     public static final Duration POST_CACHE_TTL = Duration.ofMinutes(10);
     public static final Duration LIST_CACHE_TTL = Duration.ofMinutes(10);
     public static final String REFRESH_TOKEN_PREFIX = "RT:";

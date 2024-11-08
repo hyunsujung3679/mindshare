@@ -106,9 +106,7 @@ public class RedisCacheService {
                 keyword != null ? keyword : "none",
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                pageable.getSort().toString().replace(" ", "_"),
-                pageable.getSort().getOrderFor("postNo") != null ?
-                        pageable.getSort().getOrderFor("postNo").getDirection() : "none"
+                pageable.getSort().toString().replace(" ", "_")
         );
     }
 

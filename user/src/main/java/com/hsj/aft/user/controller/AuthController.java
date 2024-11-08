@@ -62,7 +62,7 @@ public class AuthController {
         );
 
         String accessToken = tokenProvider.createAccessToken(authentication);
-        String refreshToken = tokenProvider.createRefreshToken();
+        String refreshToken = tokenProvider.createRefreshToken(authentication);
 
         tokenService.saveRefreshToken(
                 user.getUserId(),
